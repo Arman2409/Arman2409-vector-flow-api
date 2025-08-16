@@ -7,18 +7,18 @@ import express from 'express';
 // import { llmService } from './llmService'; // Your LLM service (mock or real)
 // import { loadVectors, saveVectors } from './vectorStorage'; // Functions for local vector storage
 // import { StoredChunk } from './interfaces'; // Interface for stored data
-import loggingMiddleware from './middlewares/loggingMiddleware';
-import notFoundMiddleware from './middlewares/notFoundMiddleware';
-import { idGeneratorMiddleware } from './middlewares/idGeneratorMiddleware';
+import {loggingAndIdMiddleware} from './middlewares/loggingAndIdMiddleware';
+import {notFoundMiddleware} from './middlewares/notFoundMiddleware';
+import type { RequestWithContext } from './types/shared/requests';
 
 const app = express();
 
 // Middlewares 
 app.use(express.json());
-app.use(loggingMiddleware);
-app.use(idGeneratorMiddleware);
+app.use(loggingAndIdMiddleware);
 
-app.get('/', (req, res) => {
+app.get('/', (req: RequestWithContext, res) => {
+    console.log(`[Request ID: ${req.id}] Received request on root path`);
     res.json({
         message: 'Welcome to the Vector Flow API! Use /ingest to add documents and /ask to query them.'
     });
