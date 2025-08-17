@@ -21,7 +21,7 @@ git clone https://github.com/Arman2409/vector-flow-api
 2. **Install dependencies**: Run in the terminal:
 
 ```bash
-npm install --legacy-peer-dep
+npm install --legacy-peer-deps
 ```
 
 3. **Set up the environment variables**:Add them in the .env file(you can find them in the .env.example file as well):
