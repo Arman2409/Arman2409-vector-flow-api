@@ -4,7 +4,7 @@ export interface Document {
     metadata?: Record<string, string>;
 }
 
-export interface VectorDocument extends Omit<Document, "text"> {
+export interface VectorDocument extends Document {
     vector: number[][];
 }
 

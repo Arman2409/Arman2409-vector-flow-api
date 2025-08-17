@@ -54,7 +54,8 @@ export class IngestService {
       chunks.push({
         id: `${id}_chunk${chunkIndex}`,
         vector,
-        metadata: metadata,
+        metadata,
+        text
       });
 
       chunkIndex++;

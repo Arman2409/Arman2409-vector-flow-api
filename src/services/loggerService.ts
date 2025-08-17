@@ -1,10 +1,13 @@
 import chalk from 'chalk';
 
+import type { RequestWithContext } from '../types/shared/requests';
+
+// Update the interface to include the optional request object in all methods.
 interface LoggerService {
-  info(message: string): void;
-  error(message: string, err?: Error | unknown): void;
-  warn(message: string): void;
-  debug(message: string): void;
+  info(message: string, req?: RequestWithContext): void;
+  error(message: string, err?: Error | unknown, req?: RequestWithContext): void;
+  warn(message: string, req?: RequestWithContext): void;
+  debug(message: string, req?: RequestWithContext): void;
 }
 
 class LoggerService {
@@ -14,6 +17,10 @@ class LoggerService {
     return new Date().toISOString().slice(0, -5);
   }
 
+  private getRequestId(req?: RequestWithContext<unknown>): string {
+    return req?.id ? `[Request ID: ${req.id}]` : '';
+  }
+
   public static getInstance(): LoggerService {
     if (!LoggerService.instance) {
       LoggerService.instance = new LoggerService();
@@ -21,26 +28,31 @@ class LoggerService {
     return LoggerService.instance;
   }
 
-  public info(message: string) {
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.green('INFO')}: ${message}`;
+  public info(message: string, req?: RequestWithContext<unknown>) {
+    const requestId = this.getRequestId(req);
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.green('INFO')} ${requestId}: ${message}`;
     console.log(log);
   }
 
   public error(
     message: string,
-    err?: Error | unknown
+    err?: Error | unknown,
+    req?: RequestWithContext<unknown>
   ) {
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.redBright('ERROR')}: ${message}, error:`;
+    const requestId = this.getRequestId(req);
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.redBright('ERROR')} ${requestId}: ${message}, error:`;
     console.log(log, err);
   }
 
-  public warn(message: string) {
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.yellowBright('WARN')}: ${message}:`;
+  public warn(message: string, req?: RequestWithContext) {
+    const requestId = this.getRequestId(req);
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.yellowBright('WARN')} ${requestId}: ${message}`;
     console.log(log);
   }
 
-  public debug(message: string) {
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.cyanBright('DEBUG')}: ${message}`;
+  public debug(message: string, req?: RequestWithContext) {
+    const requestId = this.getRequestId(req);
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.cyanBright('DEBUG')} ${requestId}: ${message}`;
     console.log(log);
   }
 }

@@ -29,7 +29,7 @@ export class IngestController {
 
       res.status(StatusCodes.OK).json(result);
     } catch (error) {
-      loggerService.error('Error during ingestManyHandler:', error);
+      loggerService.error('Error during ingestManyHandler:', error, req);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to ingest data' });
     }
   }

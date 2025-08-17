@@ -1,4 +1,6 @@
 import { z } from 'zod';
+import OpenAI from 'openai';
+import { Stream } from 'openai/core/streaming';
 import type { Response } from 'express';
 
 import { StatusCodes } from '../../constants/responses';
@@ -25,14 +27,30 @@ export class AskController {
                 return;
             }
 
-            console.log("herer");
-            console.log(this.askService);
-            const result = await this.askService.askQuestion(data, res);
+            const stream = await this.askService.askQuestion(data);
 
-            // res.status(StatusCodes.OK).json(result);
+            if (stream instanceof Error) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to process the request' });
+                return;
+            }
 
+            res.writeHead(StatusCodes.OK, {
+                'Content-Type': 'text/event-stream',
+                'Cache-Control': 'no-cache',
+                Connection: 'keep-alive',
+            });
+
+            for await (const chunk of stream as Stream<OpenAI.Chat.Completions.ChatCompletionChunk>) {
+                const delta = chunk.choices[0]?.delta?.content;
+                if (delta) {
+                    res.write(`data: ${delta}\n\n`);
+                }
+            }
+
+            res.write(`data: [DONE]\n\n`);
+            res.end();
         } catch (error) {
-            loggerService.error('Error during ingestManyHandler:', error);
+            loggerService.error('Error during ingestManyHandler:', error, req);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to ingest data' });
         }
     }

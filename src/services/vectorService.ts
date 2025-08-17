@@ -5,7 +5,7 @@ import type { VectorDocument, VectorDocumentScored } from '../types/modules/inge
 
 export interface VectorService {
   createEmbeddings(texts: string | string[]): Promise<number[][]>;
-  search(query: string, storedVectors: VectorDocument[]): Promise<any[]>;
+  search(query: string, storedVectors: VectorDocument[]): Promise<VectorDocumentScored[]>;
 }
 
 export class VectorService {
@@ -35,11 +35,11 @@ export class VectorService {
 
 
   public async search(query: string, storedVectors: VectorDocument[]): Promise<VectorDocumentScored[]> {
-    // 1. Create a vector for the query
+    // Create a vector for the query
     const queryVector = await this.createEmbeddings([query]);
     const normalizedQueryVector = queryVector[0];
 
-    // 3. Compute cosine similarity and rank results
+    // Compute cosine similarity and rank results
     const results = storedVectors.map(item => ({
       ...item,
       score: this.cosineSimilarity(normalizedQueryVector, item.vector as unknown as number[]),
