@@ -23,7 +23,7 @@ export const loggingAndRequestIdMiddleware = (
 
     // Format log message
     // The logic to build the request details string
-    const requestDetailsLog = `method="${chalk.magenta(method)}" path="${url}" reqId="${requestId}"`;
+    const requestDetailsLog = `method="${chalk.magenta(method)}" path="${chalk.magenta(url)}" reqId="${requestId}"`;
 
     // Conditionally add the request body
     const bodyLog = method !== "GET" && Object.keys(body).length > 0

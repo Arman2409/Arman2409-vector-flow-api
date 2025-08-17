@@ -1,10 +1,6 @@
-import dotenv from 'dotenv';
-
 import { DEFAULT_LISTEN_PORT } from './configs/server';
 import loggerService from './services/loggerService';
 import app from './app';
-
-dotenv.config();
 
 const PORT = process.env.PORT || DEFAULT_LISTEN_PORT;
 

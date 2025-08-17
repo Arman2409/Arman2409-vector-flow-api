@@ -1,9 +1,10 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 
 import { StatusCodes, ErrorMessages } from '../constants/responses';
+import type { RequestWithContext } from '../types/shared/requests';
 
 export const notFoundMiddleware = (
-    _: Request,
+    _: RequestWithContext,
     res: Response,
 ): void => {
     res.status(StatusCodes.NOT_FOUND).json({

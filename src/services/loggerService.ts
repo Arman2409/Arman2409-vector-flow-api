@@ -1,5 +1,12 @@
 import chalk from 'chalk';
 
+interface LoggerService {
+  info(message: string): void;
+  error(message: string, err?: Error | unknown): void;
+  warn(message: string): void;
+  debug(message: string): void;
+}
+
 class LoggerService {
   private static instance: LoggerService;
 

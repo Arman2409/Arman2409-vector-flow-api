@@ -1,15 +1,16 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 
 import { StatusCodes } from "../../constants/responses";
 import loggerService from "../../services/loggerService";
 import type { FileService } from '../../services/fileService';
+import type { RequestWithContext } from '../../types/shared/requests';
 
 export class HealthController {
     constructor(private fileService: FileService) {
         this.fileService = fileService;
     }
 
-    public healthCheckHandler = async (req: Request, res: Response): Promise<void> => {
+    public healthCheckHandler = async (_: RequestWithContext, res: Response): Promise<void> => {
         try {
             const vectorsJson = await this.fileService.readJson();
 

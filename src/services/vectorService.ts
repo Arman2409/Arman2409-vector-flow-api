@@ -1,13 +1,18 @@
 import { FeatureExtractionPipeline, pipeline } from '@xenova/transformers';
 
-const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2';
+import { XENOVA_MODEL_NAME } from '../configs/services';
+
+export interface VectorService {
+  createEmbeddings(texts: string | string[]): Promise<number[][]>;
+  search(query: string): Promise<any[]>;
+}
 
 export class VectorService {
   private pipe: Promise<FeatureExtractionPipeline>;
   static instance: VectorService;
 
   constructor() {
-    this.pipe = pipeline('feature-extraction', MODEL_NAME);
+    this.pipe = pipeline('feature-extraction', XENOVA_MODEL_NAME);
   }
 
   public static getInstance(): VectorService {

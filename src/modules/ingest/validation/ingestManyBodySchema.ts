@@ -9,3 +9,5 @@ const documentSchema = z.object({
 });
 
 export const ingestManyBodySchema = z.array(documentSchema);
+
+export type IngestManyBody = z.infer<typeof ingestManyBodySchema>;

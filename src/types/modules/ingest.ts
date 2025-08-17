@@ -3,5 +3,3 @@ export interface Document {
     text: string;
     metadata?: Record<string, string>;
 }
-
-export type IngestRequestPayload = Document[]

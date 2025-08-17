@@ -2,6 +2,12 @@ import { promises as fs } from "fs";
 import path from "path";
 import { VECTORS_JSON_FILE_PATH } from "../configs/services";
 
+export interface FileService {
+  readJson<T>(): Promise<T[]>;
+  appendJson<T>(items: T[]): Promise<void>;
+  writeJson<T>(items: T[]): Promise<void>;
+}
+
 export class FileService {
   private static instance: FileService;
   private filePath: string;

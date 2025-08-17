@@ -4,12 +4,11 @@ import type { Response } from 'express';
 import { StatusCodes } from '../../constants/responses';
 import loggerService from '../../services/loggerService';
 import { IngestService } from './ingest.service';
-import { ingestManyBodySchema } from './validation/ingestManyBodySchema';
+import { IngestManyBody, ingestManyBodySchema } from './validation/ingestManyBodySchema';
 import type { RequestWithContext } from '../../types/shared/requests';
-import type { IngestRequestPayload } from '../../types/modules/ingest';
 
 export interface IngestController {
-  ingestManyHandler(req: RequestWithContext<IngestRequestPayload>, res: Response): Promise<void>;
+  ingestManyHandler(req: RequestWithContext<IngestManyBody>, res: Response): Promise<void>;
 }
 
 export class IngestController {
@@ -17,7 +16,7 @@ export class IngestController {
     this.ingestService = ingestService;
   }
 
-  public ingestManyHandler = async (req: RequestWithContext<IngestRequestPayload>, res: Response): Promise<void> => {
+  public ingestManyHandler = async (req: RequestWithContext<IngestManyBody>, res: Response): Promise<void> => {
     try {
       const { success, error, data} = ingestManyBodySchema.safeParse(req.body);
 
