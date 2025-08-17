@@ -1,13 +1,13 @@
 import chalk from 'chalk';
 
-interface Logger {
+interface LoggerService {
   info(message: string): void;
   error(message: string, err?: Error | unknown): void;
   warn(message: string): void;
   debug(message: string): void;
 }
 
-class Logger {
+class LoggerService {
   private getTimestamp() {
     return new Date().toISOString();
   }
@@ -21,14 +21,12 @@ class Logger {
     message: string,
     err?: Error | unknown
   ) {
-    const errorDetails = err ? `${message}, Error: ${(err as Error).message}` : message;
-
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.redBright('ERROR')}: ${errorDetails}`;
-    console.log(log);
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.redBright('ERROR')}: ${message}, error:`;
+    console.log(log, err);
   }
 
   public warn(message: string) {
-    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.yellowBright('WARN')}: ${message}`;
+    const log = `[${chalk.gray(this.getTimestamp())}] ${chalk.yellowBright('WARN')}: ${message}:`;
     console.log(log);
   }
 
@@ -38,4 +36,4 @@ class Logger {
   }
 }
 
-export default new Logger();
+export default new LoggerService();

@@ -1,12 +1,14 @@
 // import { Embeddings } from '../../shared/embeddings';
 // import { VectorStore } from '../../shared/vector-store';
+import type { VectorService } from '../../services/vectorService';
 import type { Document } from '../../types/modules/ingest';
 
 export class IngestService {
   constructor(
-    // private embeddings: Embeddings, 
-    // private vectorStore: VectorStore
-) {}
+    private vectorsService: VectorService,
+) {
+  this.vectorsService = vectorsService;
+}
 
   public async ingestDocuments(documents: Document[]): Promise<any> {
     // 1. Loop through documents and chunk them
@@ -14,7 +16,7 @@ export class IngestService {
 
     // 2. Embed the chunks to get vectors
     const textsToEmbed = chunks.map(chunk => chunk.text);
-    // const vectors = await this.embeddings.embed(textsToEmbed);
+    const vectors = await this.vectorsService.ingest(textsToEmbed);
 
     // 3. Store chunks and their vectors
     // const result = await this.vectorStore.saveVectors(chunks, vectors);

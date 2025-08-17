@@ -2,10 +2,11 @@ import { Router } from 'express';
 
 import { IngestController } from './ingest.controller';
 import { IngestService } from './ingest.service';
+import vectorService from '../../services/vectorService';
 
-const router = Router();
-const ingestController = new IngestController(new IngestService());
+const ingestRouter = Router();
+const ingestController = new IngestController(new IngestService(vectorService));
 
-router.post('/', ingestController.ingestManyHandler);
+ingestRouter.post('/', ingestController.ingestManyHandler);
 
-export { router }
+export { ingestRouter }
