@@ -1,0 +1,1 @@
+export const TEST_MODEL_INFO = "Test model info";

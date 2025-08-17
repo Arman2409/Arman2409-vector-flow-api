@@ -3,3 +3,17 @@ export interface Document {
     text: string;
     metadata?: Record<string, string>;
 }
+
+export interface VectorDocument extends Omit<Document, "text"> {
+    vector: number[][];
+}
+
+export interface VectorDocumentScored extends VectorDocument{
+    score: number;
+}
+
+export interface IngestDocumentsResult {
+  documentCount: number;
+  chunkCount: number;
+  elapsedMs: number;
+}

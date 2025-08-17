@@ -1,5 +1,6 @@
 import type { Response } from 'express';
 
+import { TEST_MODEL_INFO } from '../../configs/modules/health';
 import { StatusCodes } from "../../constants/responses";
 import loggerService from "../../services/loggerService";
 import type { FileService } from '../../services/fileService';
@@ -17,6 +18,7 @@ export class HealthController {
             res.status(StatusCodes.OK).json({
                 status: 'OK',
                 vectorsCount: vectorsJson.length,
+                modelInfo: TEST_MODEL_INFO
             });
         } catch (error) {
             loggerService.error('Error during healthCheckHandler:', error);

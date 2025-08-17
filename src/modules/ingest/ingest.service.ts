@@ -1,6 +1,6 @@
 import type { FileService } from '../../services/fileService';
 import type { VectorService } from '../../services/vectorService';
-import type { Document } from '../../types/modules/ingest';
+import type { Document, VectorDocument, IngestDocumentsResult } from '../../types/modules/ingest';
 
 export class IngestService {
   constructor(
@@ -11,12 +11,12 @@ export class IngestService {
     this.fileService = fileService;
   }
 
-  public async ingestDocuments(documents: Document[]): Promise<any> {
+  public async ingestDocuments(documents: Document[]): Promise<IngestDocumentsResult> {
     const startTime = Date.now();
     let totalChunks = 0;
-    const allChunks: any[] = [];
+    const allChunks: VectorDocument[] = [];
 
-    // 1. Chunk documents
+    // Chunk documents
     documents.forEach(async (doc) => {
       const chunks = await this.chunkDocumentAndAddVector(doc);
       allChunks.push(...chunks);
@@ -25,7 +25,7 @@ export class IngestService {
 
     await this.fileService.appendJson(allChunks);
 
-    // 4. Return counts and timing
+    // Return counts and timing
     const elapsedMs = Date.now() - startTime;
 
     return {
@@ -35,7 +35,11 @@ export class IngestService {
     };
   }
 
-  private async chunkDocumentAndAddVector({ id, text, metadata}: Document, chunkSize: number = 700, overlap: number = 100) {
+  private async chunkDocumentAndAddVector(
+    { id, text, metadata }: Document,
+    chunkSize: number = 700,
+    overlap: number = 100
+  ): Promise<VectorDocument[]> {
     const words = text.split(/\s+/);
     const chunks = [];
     let start = 0;
@@ -54,7 +58,9 @@ export class IngestService {
       });
 
       chunkIndex++;
-      start += chunkSize - overlap; // move start with overlap
+
+      // Move start with overlap
+      start += chunkSize - overlap; 
     }
 
     return chunks;

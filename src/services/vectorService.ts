@@ -1,10 +1,11 @@
 import { FeatureExtractionPipeline, pipeline } from '@xenova/transformers';
 
 import { XENOVA_MODEL_NAME } from '../configs/services';
+import type { VectorDocument, VectorDocumentScored } from '../types/modules/ingest';
 
 export interface VectorService {
   createEmbeddings(texts: string | string[]): Promise<number[][]>;
-  search(query: string): Promise<any[]>;
+  search(query: string, storedVectors: VectorDocument[]): Promise<any[]>;
 }
 
 export class VectorService {
@@ -28,23 +29,20 @@ export class VectorService {
       pooling: 'mean',
       normalize: true,
     });
-    
+
     return output.tolist();
   }
 
 
-  public async search(query: string): Promise<any[]> {
+  public async search(query: string, storedVectors: VectorDocument[]): Promise<VectorDocumentScored[]> {
     // 1. Create a vector for the query
     const queryVector = await this.createEmbeddings([query]);
     const normalizedQueryVector = queryVector[0];
 
-    // 2. Load all stored vectors
-    const storedVectors = await this.loadVectors();
-
     // 3. Compute cosine similarity and rank results
     const results = storedVectors.map(item => ({
       ...item,
-      score: this.cosineSimilarity(normalizedQueryVector, item.vector),
+      score: this.cosineSimilarity(normalizedQueryVector, item.vector as unknown as number[]),
     }));
 
     results.sort((a, b) => b.score - a.score);
@@ -53,11 +51,11 @@ export class VectorService {
   }
 
   private cosineSimilarity(a: number[], b: number[]): number {
-    let dotProduct = 0;
-    for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-    }
-    return dotProduct; // Works for normalized vectors
+    const dot = a.reduce((sum, v, i) => sum + v * b[i], 0);
+    const normA = Math.sqrt(a.reduce((sum, v) => sum + v * v, 0));
+    const normB = Math.sqrt(b.reduce((sum, v) => sum + v * v, 0));
+
+    return dot / (normA * normB);
   }
 }
 

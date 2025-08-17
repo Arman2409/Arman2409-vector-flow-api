@@ -1,40 +1,29 @@
-import fs from 'fs/promises';
-import path from 'path';
 import OpenAI from 'openai';
+import type { Response } from 'express';
 
 import { AskBody } from './validation/askBodySchema';
 
+import { ASK_MODEL_COMPLETION } from '../../configs/modules/ask';
 import { ErrorMessages, StatusCodes } from '../../constants/responses';
-import { FileService } from '../../services/fileService';
-import { Response } from 'express';
-import { ASK_MODEL_COMPLETION, ASK_MODEL_EMBEDDING } from '../../configs/modules/ask';
-import { cosineSimilarity } from './utils/cosineSimilarity';
+import type { FileService } from '../../services/fileService';
+import type { VectorService } from '../../services/vectorService';
+import type { VectorDocument } from '../../types/modules/ingest';
 
 const openai = new OpenAI();
 
 export class AskService {
-   constructor(private fileService: FileService) {
+    constructor(private fileService: FileService, private vectorService: VectorService) {
         this.fileService = fileService;
-        console.log(fileService);
+        this.vectorService = vectorService;
     }
 
     public async askQuestion(data: AskBody, res: Response) {
         const { query, topK = 5 } = data;
 
         try {
-            const embeddingResp = await openai.embeddings.create({
-                model: ASK_MODEL_EMBEDDING,
-                input: query,
-            });
+            const storedVectors = await this.fileService.readJson<VectorDocument>();
 
-            const queryVector = embeddingResp.data[0].embedding;
-
-            const storedVectors = await this.fileService.readJson();
-
-            const scored = storedVectors.map((item: any) => ({
-                ...item,
-                score: cosineSimilarity(queryVector, item.vector),
-            }));
+            const scored = await this.vectorService.search(query, storedVectors);
 
             const topChunks = scored.sort((a, b) => b.score - a.score).slice(0, topK);
 
@@ -62,7 +51,7 @@ export class AskService {
 
             res.write(`data: [DONE]\n\n`);
             res.end();
-        } catch (err: any) {
+        } catch (err) {
             console.error('Error in /ask:', err);
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: ErrorMessages.SERVER_ERROR });
         }

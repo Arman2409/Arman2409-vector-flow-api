@@ -1,12 +1,10 @@
-import path from 'path';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
 import type { Response } from 'express';
 
 import { StatusCodes } from '../../constants/responses';
 import loggerService from '../../services/loggerService';
 import { askBodySchema, type AskBody } from './validation/askBodySchema';
-import { AskService } from './ask.service';
+import type { AskService } from './ask.service';
 import type { RequestWithContext } from '../../types/shared/requests';
 
 export interface AskController {
