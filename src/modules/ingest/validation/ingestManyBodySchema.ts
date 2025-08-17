@@ -3,8 +3,8 @@ import { z } from 'zod';
 const metadataSchema = z.record(z.string(), z.string()).optional();
 
 const documentSchema = z.object({
-  id: z.string().nonempty('ID cannot be empty'),
-  text: z.string().nonempty('Text cannot be empty'),
+  id: z.string().nonempty('"id" field can not be empty'),
+  text: z.string().nonempty('"text" field ca nnot be empty'),
   metadata: metadataSchema.optional(),
 });
 

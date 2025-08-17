@@ -21,18 +21,16 @@ export class IngestController {
     try {
       const { success, error, data} = ingestManyBodySchema.safeParse(req.body);
 
-     if (!success) {
+      if (!success) {
         res.status(StatusCodes.BAD_REQUEST).json({ error: z.prettifyError(error) });
         return;
       }
-      
+
       const result = await this.ingestService.ingestDocuments(data);
 
       res.status(StatusCodes.OK).json(result);
     } catch (error) {
-      console.log(error);
-      loggerService.error(`Error ingesting documents`, error);
-
+      loggerService.error('Error during ingestManyHandler:', error);
       res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: 'Failed to ingest data' });
     }
   }

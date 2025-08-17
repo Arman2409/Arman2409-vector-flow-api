@@ -1,15 +1,17 @@
 import chalk from 'chalk';
 
-interface LoggerService {
-  info(message: string): void;
-  error(message: string, err?: Error | unknown): void;
-  warn(message: string): void;
-  debug(message: string): void;
-}
-
 class LoggerService {
+  private static instance: LoggerService;
+
   private getTimestamp() {
-    return new Date().toISOString();
+    return new Date().toISOString().slice(0, -5);
+  }
+
+  public static getInstance(): LoggerService {
+    if (!LoggerService.instance) {
+      LoggerService.instance = new LoggerService();
+    }
+    return LoggerService.instance;
   }
 
   public info(message: string) {
@@ -36,4 +38,4 @@ class LoggerService {
   }
 }
 
-export default new LoggerService();
+export default LoggerService.getInstance();

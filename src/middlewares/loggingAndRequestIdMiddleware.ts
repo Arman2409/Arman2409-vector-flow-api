@@ -5,10 +5,12 @@ import type { Response, NextFunction } from 'express';
 import loggerService from '../services/loggerService';
 import type { RequestWithContext } from '../types/shared/requests';
 
-export const loggingAndIdMiddleware = (
+export const loggingAndRequestIdMiddleware = (
     req: RequestWithContext,
     _: Response,
     next: NextFunction
+
+    
 ): void => {
     // Gather log details
     const method = req.method;

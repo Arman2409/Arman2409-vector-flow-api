@@ -1,0 +1,1 @@
+export const VECTORS_JSON_FILE_PATH = 'data/vectors.json';

@@ -1,7 +1,5 @@
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { FeatureExtractionPipeline, pipeline, Pipeline } from '@xenova/transformers';
+import { FeatureExtractionPipeline, pipeline } from '@xenova/transformers';
 
-const VECTORS_FILE = 'data/vectors.json';
 const MODEL_NAME = 'Xenova/all-MiniLM-L6-v2';
 
 export class VectorService {
@@ -19,7 +17,7 @@ export class VectorService {
     return VectorService.instance;
   }
 
-  private async createEmbeddings(texts: string[]): Promise<number[][]> {
+  public async createEmbeddings(texts: string | string[]): Promise<number[][]> {
     const extractor = await this.pipe;
     const output = await extractor(texts, {
       pooling: 'mean',
@@ -29,32 +27,6 @@ export class VectorService {
     return output.tolist();
   }
 
-  public async ingest(documents: any[]): Promise<void> {
-    // 1. Extract texts from documents
-    const texts = documents.map(doc => doc.text);
-    
-    // 2. Create vectors using the private method
-    const vectors = await this.createEmbeddings(texts);
-
-    // 3. Prepare data for the JSON file
-    const data = documents.map((doc, index) => ({
-      id: doc.id,
-      text: doc.text,
-      metadata: doc.metadata,
-      vector: vectors[index],
-    }));
-
-    // 4. Save the data to the local file
-    writeFileSync(VECTORS_FILE, JSON.stringify(data, null, 2));
-  }
-
-  public async loadVectors(): Promise<any[]> {
-    if (!existsSync(VECTORS_FILE)) {
-      return [];
-    }
-    const data = readFileSync(VECTORS_FILE, 'utf-8');
-    return JSON.parse(data);
-  }
 
   public async search(query: string): Promise<any[]> {
     // 1. Create a vector for the query
