@@ -10,7 +10,8 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "start": "node dist/server.js",
-    "start:dev": "nodemon ./dist/server.js"
+    "start:dev": "nodemon ./dist/server.js",
+    "dev": "npm run build & npm run start:dev"
   },
   "dependencies": {
     "@types/express": "^5.0.3",

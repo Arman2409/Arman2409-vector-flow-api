@@ -12,20 +12,26 @@ Ensure you have the following installed:
 
 ## Setup Instructions
 
-1.. **Install dependencies**: Run in the terminal:
+1. **Cloen the repo**: Run in the terminal:
 
 ```bash
-npm install
+git clone https://github.com/Arman2409/vector-flow-api
 ```
 
-2. **Set up the environment variables**:Add them in the .env file(you can find them in the .env.example file as well):
+2. **Install dependencies**: Run in the terminal:
+
+```bash
+npm install --legacy-peer-dep
+```
+
+3. **Set up the environment variables**:Add them in the .env file(you can find them in the .env.example file as well):
   
 ```
 OPENAI_API_KEY=<YOUR_OPENAI_API_KEY_HERE>
 PORT=<YOUR_PORT_HERE>(default is 3000)
 ```
 
-3. **Build the Project**:: Run in the terminal
+4. **Build the Project**:: Run in the terminal
 
 ```bash
 npm run build
@@ -33,7 +39,7 @@ npm run build
 npm run build:watch
 ```
 
-4. **Start the Server**: Run the server:
+5. **Start the Server**: Run the server:
 
 ```bash
 npm run start
